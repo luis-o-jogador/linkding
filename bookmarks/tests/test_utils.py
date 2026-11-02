@@ -49,6 +49,26 @@ class UtilsTestCase(TestCase):
 
                 self.assertEqual(expected, (delta.years, delta.months, delta.weeks))
 
+    def test_calculate_date_delta_counts_complete_calendar_units(self):
+        start = timezone.datetime(2024, 5, 15)
+        end = timezone.datetime(2022, 4, 17)
+
+        result = _calculate_date_delta(start, end)
+
+        self.assertEqual(2, result.years)
+        self.assertEqual(24, result.months)
+        self.assertEqual(108, result.weeks)
+
+    def test_calculate_date_delta_clamps_future_values_to_zero(self):
+        start = timezone.datetime(2024, 1, 1)
+        end = timezone.datetime(2024, 1, 8)
+
+        result = _calculate_date_delta(start,end)
+
+        self.assertEqual(0, result.years)
+        self.assertEqual(0, result.months)
+        self.assertEqual(0, result.weeks)
+
     def test_humanize_absolute_date(self):
         test_cases = [
             (
